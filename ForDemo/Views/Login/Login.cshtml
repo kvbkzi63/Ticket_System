@@ -1,0 +1,116 @@
+﻿@model ForDemo.Models.UserViewModel
+@{
+    ViewBag.Title = "登入";
+}
+
+<style>
+    .form-container {
+        width: 450px;
+    }
+
+    .card {
+        /* background-color: rgba(61, 150, 245, 0.03); */
+        box-shadow: 0 0 13px 0 rgba(74,53,107,.08);
+        border-radius: 10px;
+        border-color: rgb(205,230,255);
+        background-color: #ffffff8c;
+        border-color: rgb(202, 212, 255);
+    }
+
+    #LoginForm {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        /*font-size: .8125rem;*/
+        letter-spacing: .1px;
+        transform: none;
+    }
+
+        #LoginForm .img-container {
+            border-bottom: 2px solid rgb(222, 237, 255);
+            width: 100%;
+            border-bottom: 2px solid rgb(202, 212, 255);
+        }
+
+        #LoginForm img {
+            box-shadow: 2px 5px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            border-radius: 50%;
+            width: 62%;
+            height: 62%;
+            margin: 0 1rem 1rem;
+            opacity: 0.9;
+        }
+
+        #LoginForm label {
+            font-weight: 600;
+            color: #4b9bfb;
+        }
+
+        #LoginForm input, #LoginForm select {
+            max-width: none;
+            font-size: 1rem;
+        }
+
+        #LoginForm .form-group {
+            margin: 1rem 0;
+        }
+
+            #LoginForm .form-group + .form-group {
+                margin-top: 0;
+            }
+
+        #LoginForm .form-control:focus {
+            box-shadow: none;
+        }
+
+        #LoginForm button {
+            box-shadow: 0 2px 6px 0 rgba(33,150,243,.5);
+        }
+
+        #LoginForm .btn-login {
+            color: #fff;
+            background-color: #4088d6;
+            border-color: #4088d6;
+        }
+
+            #LoginForm .btn-login:hover {
+                color: #fff;
+                background-color: #2564a9;
+                border-color: #0c7cd5;
+            }
+
+            #LoginForm .btn-login:focus {
+                color: #fff;
+                background-color: #2564a9;
+                border-color: #0c7cd5;
+            }
+
+    .btn-login:not(:disabled):not(.disabled):active, .btn-login:not(:disabled):not(.disabled).active, .show > .btn-login.dropdown-toggle {
+        color: #fff;
+        background-color: #0c7cd5;
+        border-color: #0b75c9;
+        margin-top: .05rem;
+    }
+</style>
+<div class="mx-auto mt-5 form-container">
+    <div class="card p-4">
+        @using (Html.BeginForm("Login", "Login", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { id = "LoginForm" }))
+        {
+            @Html.AntiForgeryToken() 
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserId, htmlAttributes: new { @class = "addColon justify-content-end" })
+                @Html.TextBoxFor(model => model.UserId, new { @class = "form-control form-control-lg", placeholder = "請輸入帳號" })
+                @Html.ValidationMessageFor(model => model.UserId, null, new { @class = "help-inline help-block" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.UserPd, htmlAttributes: new { @class = "addColon justify-content-end" })
+                @Html.PasswordFor(model => model.UserPd, new { @class = "form-control form-control-lg", placeholder = "請輸入密碼" })
+                @Html.ValidationMessageFor(model => model.UserPd, null, new { @class = "help-inline help-block" })
+            </div> 
+            <div class="logintype" style="color:red">@TempData["Error"]</div>
+            <div class="row no-gutters mt-4 d-flex justify-content-end">
+                <button id="Mt_login" type="submit" class="btn btn-login btn-block btn-lg rounded-pill col-4">登入</button>
+            </div>
+        }
+    </div>
+</div>

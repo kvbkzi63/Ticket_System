@@ -1,0 +1,75 @@
+﻿@model  ForDemo.Models.TicketRecordViewModel
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("NewData", "TicketRecord", FormMethod.Post, new { id = "TicketRecordData", @class = "form-horizontal" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(i => Model.Ticket_Seq) 
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="create-modal-label"><i class="fas fa-pencil-alt"></i>&nbsp;&nbsp;<b>@ViewBag.Title</b></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="error">
+
+                </div>
+                <div class="row ">
+                    <div class="col-md-4 spacing">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Ticket_Type, htmlAttributes: new { @class = "col-form-label" })
+                            @Html.DropDownListFor(model => model.Ticket_Type, (IEnumerable<SelectListItem>)ViewBag.TicketType, new { @id = "Ticket_Type", @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 spacing">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Severity, htmlAttributes: new { @class = "col-form-label" })
+                            @Html.DropDownListFor(model => model.Severity, (IEnumerable<SelectListItem>)ViewBag.Severity, new { @id = "Severity", @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-md-4 spacing">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "col-form-label" })
+                            @Html.DropDownListFor(model => model.Priority, (IEnumerable<SelectListItem>)ViewBag.Roles, new { @id = "Priority", @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Ticket_Title, htmlAttributes: new { @class = "col-form-label" })
+                            @Html.EditorFor(model => model.Ticket_Title, new { htmlAttributes = new { @class = "form-control", @id = "Ticket_Title" } })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Ticket_Desc, htmlAttributes: new { @class = "col-form-label" })
+                            @Html.EditorFor(model => model.Ticket_Desc, new { htmlAttributes = new { @class = "form-control", @id = "Ticket_Desc" } })
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btn_SaveData" class="btn btn-primary btn-m">
+                    <i class="fas fa-check-circle"></i>
+                    &nbsp;&nbsp;
+                    存檔
+                </button>
+                <button type="button" class="btn btn-secondary btn-m" data-dismiss="modal">
+                    <i class="fas fa-sign-out-alt"></i>
+                    &nbsp;&nbsp;
+                    離開
+                </button>
+            </div>
+        </div>
+    </div>
+}
+

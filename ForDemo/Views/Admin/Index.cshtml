@@ -1,0 +1,217 @@
+﻿@model ForDemo.Models.UserViewModel
+@{
+    ViewBag.Title = "帳號管理作業";
+} 
+@using (Html.BeginForm("Query", "Admin", FormMethod.Post, new { id = "AdminForm", @class = "form-inline" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="coltop10">
+        <div class="card container" style="margin-top:30px;">
+            <div class="card-body">
+                <div class="row justify-content-end" style="padding-top:5px;">
+                    <button id="Mt_Query" type="button" class="btn btn-m btn-primary mr-sm-2">
+                        <i class="fas fa-search"></i>
+                        &nbsp;&nbsp;
+                        查詢
+                    </button>
+                    <button id="Mt_Clear" type="button" class="btn btn-m btn-secondary mr-sm-2">
+                        <i class="fas fa-eraser"></i>
+                        &nbsp;&nbsp;
+                        清除
+                    </button>
+                    <button id="Mt_Create" type="button" class="btn btn-m btn-primary mr-sm-2" data-toggle="modal" data-target="#data-modal">
+                        <i class="fas fa-plus-square"></i>
+                        &nbsp;&nbsp;
+                        新增
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: center;">
+        </div>
+    </div>
+}
+
+<div class="table-responsive-sm">
+    <table id="DTList"> </table>
+</div>
+
+<!-- 新增 -->
+<div class="modal fade" id="data-modal" tabindex="-1" role="dialog" aria-labelledby="create-modal-label" data-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" id="section1">
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(function () {
+            var target = $('#DTList');
+            //欄位定義
+            var formColumn = [ 
+                {
+                    field: 'DC',
+                    title: '刪除',
+                    align: 'center',
+                    width: '25px',
+                    clickToSelect: false,
+                    events: window.operateEvents,
+                    formatter: ['<button type="button" class="remove btn btn-sm" title="停用"><i class="far fa-trash-alt"></i></button>']
+                }, 
+                {
+                    field: 'UserId',
+                    title: '角色帳號',
+                    sortable: true,
+                    align: 'left',
+                    cellStyle: formatTableUnit,
+                    formatter: paramsMatter
+                },
+                {
+                    field: 'UserPd',
+                    title: '角色密碼',
+                    sortable: true,
+                    align: 'left',
+                    cellStyle: formatTableUnit,
+                    formatter: paramsMatter
+                },
+                {
+                    field: 'UserName',
+                    title: '角色名稱',
+                    sortable: true,
+                    align: 'left',
+                    cellStyle: formatTableUnit,
+                    formatter: paramsMatter
+                },
+                {
+                    field: 'Roles',
+                    title: '角色權限',
+                    sortable: true,
+                    align: 'left',
+                    cellStyle: formatTableUnit,
+                    formatter: function (value, row, index) {
+                        var arr = new Array();
+                        if (row.Roles === 0) {
+                            return ['<span>QA</span>'];
+                        } else if (row.Roles === 1) {
+                            return ['<span>RD</span>'];
+                        } else if (row.Roles === 2) {
+                            return ['<span>PM</span>'];
+                        } else if (row.Roles === 3) {
+                            return ['<span>ADMIN</span>']; 
+                        } else {
+                           return ['<span>-</span>'];
+                        } 
+                    }
+                } 
+            ];
+            $('#Mt_Query').click(function () {
+                var param = $("#AdminForm").serialize();
+                target.bootstrapTable("destroy");
+                CallAjax("Admin/Query", "POST", "JSON", param).done(function (mydata) {
+                    showMaintainDgvTable(target, JSON.parse(mydata)['rows'], formColumn, null);
+                    target.show();
+                });
+            });
+            $('#Mt_Create').click(function () {
+                var form = $('#AdminForm');
+                var token = $('input[name="__RequestVerificationToken"]', form).val();
+                CallAjax("Admin/Create", "POST", "json", { __RequestVerificationToken: token }).done(function (ret) {
+                    $("#data-modal").modal('show');
+                    $('#section1').html(ret);
+                    $('#btn_NewData').click(function () { 
+                        var param = $("#AdminData").serialize();
+                        CallAjax("Admin/NewData", "POST", "JSON", param).done(function (result) {
+                            alert('新增成功');
+                            $("#data-modal").modal('hide');
+                            target.bootstrapTable("destroy");
+                            showMaintainDgvTable(target, JSON.parse(result)['rows'], formColumn, null);
+                            target.show();
+                        });
+                    });
+                }).fail(function () { console.log("error"); });
+            });
+
+            $('#Mt_Clear').click(function () {
+                target.bootstrapTable("destroy");
+                showMaintainDgvTable(target, {}, formColumn, null);
+                target.show();
+
+            }); 
+            showMaintainDgvTable(target, {}, formColumn, null);
+            target.show();  
+        });
+
+        function showMaintainDgvTable(target, data, column, url) {
+            //bootstrap table初始化数据
+            target.bootstrapTable({
+                contentType: 'application/json,charset=utf-8',
+                showPaginationSwitch: true,
+                classes: "table table-bordered table-striped table-hover clickable",
+                rowStyle: 'rowStyle',
+                theadClasses: "sampletable",
+                pagination: true,
+                search: true,
+                //fixedColumns: true,
+                //height: 630,
+                pageSize: 10,
+                pageList: [5, 10, 20, 50, 100],
+                columns: column,
+                data: data,
+                url: url
+            });
+        }
+        function formatTableUnit(value, row, index) {
+            return {
+                css: {
+                    "white-space": "nowrap",
+                    "text-overflow": "ellipsis",
+                    "overflow": "hidden",
+                    "max-width": "150px"
+                }
+            };
+        }
+        function paramsMatter(value, row, index) {
+            var span = document.createElement("span");
+            span.setAttribute("title", value);
+            span.innerHTML = value;
+            return span.outerHTML;
+        } 
+        function CallAjax(url, type, datatype, data, isasync = false) { 
+            return $.ajax({
+                async: isasync,
+                url: url,
+                type: type,
+                datatype: datatype,
+                data: data
+
+            });
+        }
+        window.operateEvents = {
+            'click .edit': function (e, value, row, index) {
+                var form = $('#AdminForm');
+                var token = $('input[name="__RequestVerificationToken"]', form).val();
+                var data = row;
+                data.__RequestVerificationToken = token;
+                currIndex = index;
+                CallAjax("Admin/Edit", "POST", "json", data).done(function (dataArr) {
+                    $("#data-modal").modal('show');
+                    $('#section1').html(dataArr); 
+                }).fail(function () { console.log("error"); }); 
+            },
+            'click .remove': function (e, value, row, index) {
+                currIndex = index;
+                var form = $('#AdminForm');
+                var token = $('input[name="__RequestVerificationToken"]', form).val();
+                var data = {};
+                data.__RequestVerificationToken = token;
+                data.UserId = row.UserId;
+                CallAjax("Admin/Remove", "POST", "json", data).done(function (result) {
+                    alert('刪除完畢!!');
+                    target.bootstrapTable("destroy");
+                    showMaintainDgvTable(target, JSON.parse(result)['rows'], formColumn, null);
+                    target.show();
+                }).fail(function () { console.log("error"); }); 
+            } 
+        }
+    </script>
+}
+
+

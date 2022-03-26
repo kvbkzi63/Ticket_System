@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<style>
+    #system-general {
+        margin: 3rem;
+    }
+
+    .card {
+        box-shadow: 0 0 13px 0 rgba(62,44,90,.08);
+    }
+
+        .card + .card {
+            margin-top: 2rem;
+        }
+
+    .card-header {
+        font-weight: 600;
+    }
+
+    .card-body {
+        font-size: 0;
+    }
+
+        .card-body > .btn {
+            margin: .2rem;
+        }
+
+    .card.card-red {
+        border-color: #de718c;
+        border-color: #ce5472;
+    }
+
+        .card.card-red .card-header {
+            background-color: #ffebed;
+            color: #de718c;
+            border-bottom: 1px solid #de718c20;
+            color: #ce5472;
+            border-bottom: 1px solid #ce547220;
+        }
+
+        .card.card-red .btn-primary {
+            background-color: #de718c;
+            border-color: #de718c;
+            background-color: #ce5472;
+            border-color: #ce5472;
+        }
+
+            .card.card-red .btn-primary:hover {
+                background-color: #af0118;
+                border-color: #af0118;
+            }
+
+    .card.card-blue {
+        border-color: #34b6d6;
+        border-color: #36a4bf;
+    }
+
+        .card.card-blue .card-header {
+            background-color: #e7faff;
+            color: #34b6d6;
+            border-bottom: 1px solid #34b6d620;
+            color: #36a4bf;
+            border-bottom: 1px solid #36a4bf20;
+        }
+
+        .card.card-blue .btn-primary {
+            background-color: #34b6d6;
+            border-color: #34b6d6;
+            background-color: #36a4bf;
+            border-color: #36a4bf;
+        }
+
+            .card.card-blue .btn-primary:hover {
+                background-color: #167086;
+                border-color: #167086;
+            }
+</style>
+<div id="system-general" class="col col-9 mx-auto">
+ 
+</div> 
