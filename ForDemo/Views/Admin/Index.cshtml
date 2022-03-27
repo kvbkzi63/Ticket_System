@@ -45,8 +45,46 @@
     <script>
         $(function () {
             var target = $('#DTList');
+      
+            $('#Mt_Query').click(function () {
+                var param = $("#AdminForm").serialize();
+                target.bootstrapTable("destroy");
+                CallAjax("Admin/Query", "POST", "JSON", param).done(function (mydata) {
+                    showMaintainDgvTable(target, JSON.parse(mydata)['rows'], GetGridColumn(), null);
+                    target.show();
+                });
+            });
+            $('#Mt_Create').click(function () {
+                var form = $('#AdminForm');
+                var token = $('input[name="__RequestVerificationToken"]', form).val();
+                CallAjax("Admin/Create", "POST", "json", { __RequestVerificationToken: token }).done(function (ret) {
+                    $("#data-modal").modal('show');
+                    $('#section1').html(ret);
+                    $('#btn_NewData').click(function () { 
+                        var param = $("#AdminData").serialize();
+                        CallAjax("Admin/NewData", "POST", "JSON", param).done(function (result) {
+                            alert('新增成功');
+                            $("#data-modal").modal('hide');
+                            target.bootstrapTable("destroy");
+                            showMaintainDgvTable(target, JSON.parse(result)['rows'], GetGridColumn(), null);
+                            target.show();
+                        });
+                    });
+                }).fail(function () { console.log("error"); });
+            });
+
+            $('#Mt_Clear').click(function () {
+                target.bootstrapTable("destroy");
+                showMaintainDgvTable(target, {}, GetGridColumn(), null);
+                target.show();
+
+            }); 
+            showMaintainDgvTable(target, {}, GetGridColumn(), null);
+            target.show();  
+        });
+        function GetGridColumn() {
             //欄位定義
-            var formColumn = [ 
+            var formColumn = [
                 {
                     field: 'DC',
                     title: '刪除',
@@ -55,7 +93,7 @@
                     clickToSelect: false,
                     events: window.operateEvents,
                     formatter: ['<button type="button" class="remove btn btn-sm" title="停用"><i class="far fa-trash-alt"></i></button>']
-                }, 
+                },
                 {
                     field: 'UserId',
                     title: '角色帳號',
@@ -95,50 +133,16 @@
                         } else if (row.Roles === 2) {
                             return ['<span>PM</span>'];
                         } else if (row.Roles === 3) {
-                            return ['<span>ADMIN</span>']; 
+                            return ['<span>ADMIN</span>'];
                         } else {
-                           return ['<span>-</span>'];
-                        } 
+                            return ['<span>-</span>'];
+                        }
                     }
-                } 
+                }
             ];
-            $('#Mt_Query').click(function () {
-                var param = $("#AdminForm").serialize();
-                target.bootstrapTable("destroy");
-                CallAjax("Admin/Query", "POST", "JSON", param).done(function (mydata) {
-                    showMaintainDgvTable(target, JSON.parse(mydata)['rows'], formColumn, null);
-                    target.show();
-                });
-            });
-            $('#Mt_Create').click(function () {
-                var form = $('#AdminForm');
-                var token = $('input[name="__RequestVerificationToken"]', form).val();
-                CallAjax("Admin/Create", "POST", "json", { __RequestVerificationToken: token }).done(function (ret) {
-                    $("#data-modal").modal('show');
-                    $('#section1').html(ret);
-                    $('#btn_NewData').click(function () { 
-                        var param = $("#AdminData").serialize();
-                        CallAjax("Admin/NewData", "POST", "JSON", param).done(function (result) {
-                            alert('新增成功');
-                            $("#data-modal").modal('hide');
-                            target.bootstrapTable("destroy");
-                            showMaintainDgvTable(target, JSON.parse(result)['rows'], formColumn, null);
-                            target.show();
-                        });
-                    });
-                }).fail(function () { console.log("error"); });
-            });
 
-            $('#Mt_Clear').click(function () {
-                target.bootstrapTable("destroy");
-                showMaintainDgvTable(target, {}, formColumn, null);
-                target.show();
-
-            }); 
-            showMaintainDgvTable(target, {}, formColumn, null);
-            target.show();  
-        });
-
+            return formColumn;
+        }
         function showMaintainDgvTable(target, data, column, url) {
             //bootstrap table初始化数据
             target.bootstrapTable({
@@ -205,9 +209,9 @@
                 data.UserId = row.UserId;
                 CallAjax("Admin/Remove", "POST", "json", data).done(function (result) {
                     alert('刪除完畢!!');
-                    target.bootstrapTable("destroy");
-                    showMaintainDgvTable(target, JSON.parse(result)['rows'], formColumn, null);
-                    target.show();
+                    $('#DTList').bootstrapTable("destroy"); 
+                    showMaintainDgvTable($('#DTList'), JSON.parse(result)['result'], GetGridColumn(), null);
+                    $('#DTList').show();
                 }).fail(function () { console.log("error"); }); 
             } 
         }
