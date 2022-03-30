@@ -56,7 +56,6 @@
             }
 
         .bg-primary-light {
-
             background-color: #4088d6 !important;
         }
 
@@ -66,10 +65,10 @@
 
             nav.bg-primary-light > .container a:hover {
                 background-color: rgb(92, 130, 216);
-                color: rgb(255, 255, 255) ;
+                color: rgb(255, 255, 255);
             }
 
-        #logout a{
+        #logout a {
             color: rgb(108, 117, 125);
         }
 
@@ -88,23 +87,6 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         @if (!string.IsNullOrWhiteSpace("" + Session["UserName"]))
                         {
-                            @*if ((int)Session["Roles"] == 3)
-                            {
-                                <ul class="navbar-nav">
-                                    <li class="nav-item dropdown ">
-                                        @Html.ActionLink("帳號管理作業", "Index", "Admin", new { area = "" }, new { @class = "navbar-brand" })
-                                    </li>
-                                </ul>
-                            }
-                            else
-                            {
-                                <ul class="navbar-nav">
-                                    <li class="nav-item dropdown ">
-                                        @Html.ActionLink("待處理問題清單", "Index", "TicketRecord", new { area = "" }, new { @class = "navbar-brand" })
-                                    </li>
-                                </ul>
-                            }*@
-
                             <ul class="navbar-nav ml-auto">
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true">您好 @Session["UserName"].ToString()</a>
@@ -113,7 +95,6 @@
                                     </div>
                                 </li>
                             </ul>
-
                         }
 
                     </div>
@@ -133,6 +114,8 @@
     @Scripts.Render("~/bundles/bootstrap")
 
     <script src="~/Scripts/bootstrap-table-master/bootstrap-table.min.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/cmm/cmm.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html> 
